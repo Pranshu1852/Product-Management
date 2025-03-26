@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product-Management</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lobster&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
+    <script defer src="./script.js" type="module"></script>
+</head>
+<body>
+    <div class="homepage">
+        <div class="homepage__header">
+            <h1>Product Management System</h1>
+            <button class="header__btn--addproduct">Add Product</button>
+        </div>
+        <div class="homepage__searchbar">
+            <input type="text" placeholder="Search Products..." id="searchbar">
+        </div>
+        <!-- <div class="">
+            <div>
+                <input type="number">
+                <input type="number">
+                <button></button>
+            </div>
+            <select name="Sort" id="">
+                <option value="">Please select</option>
+                <option value="name">name</option>
+                <option value="price">price</option>
+            </select>
+            <button>reset</button>
+        </div> -->
+        <div class="homepage__addproduct">
+            <form id="addproduct__form">
+                <div class="form__header">
+                    <h2>Add Product</h2>
+                    <div class="form__seperator"></div>
+                </div>
+                <div class="form__element">
+                    <label for="product--name">ProductName</label>
+                    <input type="text" id="product--name" required>
+                </div>
+                <div class="form__imagesection">
+                    <div class="imagesection__input">
+                        <div class="form__element">
+                            <label for="product--imagefile">Image File</label>
+                            <input data-value="" type="file" placeholder="image" id="product--imagefile">
+                        </div>
+                        <div class="image__seperator">OR</div>
+                        <div class="form__element">
+                            <label for="product--image">Image URL</label>
+                            <input type="text" id="product--image">
+                        </div>
+                    </div>
+                    <div class="form__element image__element">
+                        <label for="image-preview">Preview</label>
+                        <img class="image-preview" src="" alt="">
+                    </div>
+                </div>
+                <div class="form__element">
+                    <label for="product--price">Price</label>
+                    <input type="number" id="product--price" required>
+                </div>
+                <div class="form__element">
+                    <label for="product--description">Description</label>
+                    <textarea id="product--description" rows="3"></textarea>
+                </div>
+                <button type="submit" class="form__btn--submit">Add Product</button>
+                <button type="reset" class="form__btn--close"><img class="icon--cross" src="./assets/svgs/cross.svg" alt=""></button>
+            </form>
+        </div>
+
+        <div class="homepage__productgroup">
+            
+        </div>
+        <div class="homepage__updateproduct">
+            <form id="updateproduct__form">
+                <div class="form__header">
+                    <h2>Update Product</h2>
+                    <div class="form__seperator"></div>
+                </div>
+                <input type="hidden" id="updateproduct--id">
+                <div class="form__element">
+                    <label for="updateproduct--name">ProductName</label>
+                    <input type="text" id="updateproduct--name" required>
+                </div>
+                <div class="form__imagesection">
+                    <div class="imagesection__input">
+                        <div class="form__element">
+                            <label for="updateproduct--imagefile">Image File</label>
+                            <input type="file" placeholder="image" id="updateproduct--imagefile">
+                        </div>
+                        <div class="image__seperator">OR</div>
+                        <div class="form__element">
+                            <label for="updateproduct--image">Image URL</label>
+                            <input type="text" id="updateproduct--image">
+                        </div>
+                    </div>
+                    <div class="form__element image__element">
+                        <label for="updateimage">Preview</label>
+                        <img class="updateimage image-preview" src="" alt="">
+                    </div>
+                </div>
+                <div class="form__element">
+                    <label for="updateproduct--price">Price</label>
+                    <input type="number" id="updateproduct--price" required>
+                </div>
+                <div class="form__element">
+                    <label for="updateproduct--description">Description</label>
+                    <textarea id="updateproduct--description" rows="3"></textarea>
+                </div>
+                <button type="submit" class="form__btn--submit">Update Product</button>
+                <button type="reset" class="form__btn--close"><img class="icon--cross" src="./assets/svgs/cross.svg" alt=""></button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
