@@ -23,19 +23,23 @@
         <div class="homepage__searchbar">
             <input type="text" placeholder="Search Products..." id="searchbar">
         </div>
-        <!-- <div class="">
-            <div>
-                <input type="number">
-                <input type="number">
-                <button></button>
+        <div class="homepage__filterbar">
+            <div class="filterbar__price">
+                <input type="number" placeholder="Min Price" id="pricemin">
+                <input type="number" placeholder="Max Price" id="pricemax">
+                <button class="btn--filter">Filter</button>
             </div>
-            <select name="Sort" id="">
-                <option value="">Please select</option>
-                <option value="name">name</option>
-                <option value="price">price</option>
-            </select>
-            <button>reset</button>
-        </div> -->
+            <div class="filterbar__sort">
+                <h3>Sort By:</h3>
+                <select name="Sort" id="filter--sort" >
+                    <option value="">Please select</option>
+                    <option value="name">Sort by Name</option>
+                    <option value="pricelow">Price: low to high</option>
+                    <option value="pricehigh">Price: high to low</option>
+                </select>
+            </div>
+            <button class="btn--reset">Reset Filter</button>
+        </div>
         <div class="homepage__addproduct">
             <form id="addproduct__form">
                 <div class="form__header">
@@ -58,9 +62,9 @@
                             <input type="text" id="product--image">
                         </div>
                     </div>
-                    <div class="form__element image__element">
+                    <div class="form__element product--image__element">
                         <label for="image-preview">Preview</label>
-                        <img class="image-preview" src="" alt="">
+                        <img class="product__image-preview image-preview" src="" alt="">
                     </div>
                 </div>
                 <div class="form__element">
@@ -94,7 +98,7 @@
                     <div class="imagesection__input">
                         <div class="form__element">
                             <label for="updateproduct--imagefile">Image File</label>
-                            <input type="file" placeholder="image" id="updateproduct--imagefile">
+                            <input data-value="" type="file" placeholder="image" id="updateproduct--imagefile">
                         </div>
                         <div class="image__seperator">OR</div>
                         <div class="form__element">
@@ -102,9 +106,9 @@
                             <input type="text" id="updateproduct--image">
                         </div>
                     </div>
-                    <div class="form__element image__element">
-                        <label for="updateimage">Preview</label>
-                        <img class="updateimage image-preview" src="" alt="">
+                    <div class="form__element updateproduct--image__element">
+                        <label for="image-preview">Preview</label>
+                        <img class="updateproduct__image-preview image-preview" src="" alt="">
                     </div>
                 </div>
                 <div class="form__element">
