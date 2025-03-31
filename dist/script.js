@@ -1,13 +1,8 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const storagehandler_js_1 = __importDefault(require("./scripts/storagehandler.js"));
+import storageHandler from "./scripts/storagehandler.js";
 class ProductManagement {
     constructor() {
         this.initiateEventListener();
-        this.getAllproducts(storagehandler_js_1.default.getStorage("products"));
+        this.getAllproducts(storageHandler.getStorage("products"));
         this.debouncefilter = debounce.call(this, this.filterProducts, 500);
     }
     initiateEventListener() {
@@ -147,7 +142,7 @@ class ProductManagement {
         };
         this.addStorage(product);
         this.clearValues('product');
-        this.getAllproducts(storagehandler_js_1.default.getStorage("products"));
+        this.getAllproducts(storageHandler.getStorage("products"));
     }
     createProduct(product) {
         const productcard = `<a class="product--link" href="/product.html?product_id=${product.id}">
@@ -167,9 +162,9 @@ class ProductManagement {
         return productcard;
     }
     addStorage(product) {
-        const productArray = storagehandler_js_1.default.getStorage("products");
+        const productArray = storageHandler.getStorage("products");
         productArray.push(product);
-        storagehandler_js_1.default.setStorage("products", productArray);
+        storageHandler.setStorage("products", productArray);
     }
     getAllproducts(productArray) {
         const productGroup = document.getElementsByClassName("homepage__productgroup")[0];
@@ -195,7 +190,7 @@ class ProductManagement {
         });
     }
     getProduct(id) {
-        const productArray = storagehandler_js_1.default.getStorage("products");
+        const productArray = storageHandler.getStorage("products");
         const product = productArray.find((element) => {
             return element.id === id;
         });
@@ -203,13 +198,13 @@ class ProductManagement {
         return product;
     }
     deleteProduct(id) {
-        const productArray = storagehandler_js_1.default.getStorage("products");
+        const productArray = storageHandler.getStorage("products");
         const filterArray = productArray.filter((element) => {
             return element.id != id;
         });
         console.log(filterArray);
-        storagehandler_js_1.default.setStorage("products", filterArray);
-        this.getAllproducts(storagehandler_js_1.default.getStorage("products"));
+        storageHandler.setStorage("products", filterArray);
+        this.getAllproducts(storageHandler.getStorage("products"));
     }
     showProduct(id) {
         const product = this.getProduct(id);
@@ -241,7 +236,7 @@ class ProductManagement {
         this.updateProduct(id, updatedProduct);
     }
     updateProduct(id, updatedProduct) {
-        const productArray = storagehandler_js_1.default.getStorage("products");
+        const productArray = storageHandler.getStorage("products");
         const updateProductarray = productArray.map((element) => {
             if (element.id === id) {
                 console.log("inside");
@@ -250,8 +245,8 @@ class ProductManagement {
             return element;
         });
         console.log(updateProductarray);
-        storagehandler_js_1.default.setStorage("products", updateProductarray);
-        this.getAllproducts(storagehandler_js_1.default.getStorage("products"));
+        storageHandler.setStorage("products", updateProductarray);
+        this.getAllproducts(storageHandler.getStorage("products"));
         this.clearValues('updateproduct');
         this.closePopup(document.getElementsByClassName("homepage__updateproduct")[0]);
     }
@@ -284,8 +279,8 @@ class ProductManagement {
                 return (element.name.toLowerCase().includes(inputString) ||
                     element.description.toLowerCase().includes(inputString));
             });
-            storagehandler_js_1.default.setStorage("filterProducts", filterArray);
-            this.getAllproducts(storagehandler_js_1.default.getStorage("filterProducts"));
+            storageHandler.setStorage("filterProducts", filterArray);
+            this.getAllproducts(storageHandler.getStorage("filterProducts"));
         }
         else {
             filterArray = productArray;
@@ -320,8 +315,8 @@ class ProductManagement {
                 break;
             }
         }
-        storagehandler_js_1.default.setStorage("filterProducts", filterArray);
-        this.getAllproducts(storagehandler_js_1.default.getStorage("filterProducts"));
+        storageHandler.setStorage("filterProducts", filterArray);
+        this.getAllproducts(storageHandler.getStorage("filterProducts"));
     }
     resetFilter() {
         const inputString = document.getElementById("searchbar");
@@ -332,7 +327,7 @@ class ProductManagement {
         minValue.value = "";
         maxValue.value = "";
         sortValue.value = "";
-        this.getAllproducts(storagehandler_js_1.default.getStorage("products"));
+        this.getAllproducts(storageHandler.getStorage("products"));
     }
     openPopup(element) {
         element.style.display = "flex";
