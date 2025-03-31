@@ -4,6 +4,7 @@ class ProductManagement {
     constructor() {
         this.initiateEventListener();
         this.getAllproducts(storageHandler.getStorage("products"));
+        this.debouncefilter=debounce.call(this,this.filterProducts,500);
     }
 
     initiateEventListener() {
@@ -60,6 +61,25 @@ class ProductManagement {
                 }
             })
         });
+
+        document.getElementById("searchbar").addEventListener("input", (event) => {
+            event.preventDefault();
+            this.debouncefilter();
+        });
+
+        document.getElementsByClassName('homepage__filterbar')[0].addEventListener('click', (event) => {
+            if (event.target.className === 'btn--filter') {
+                this.filterProducts();
+            }
+
+            if (event.target.className === 'btn--reset') {
+                this.resetFilter();
+            }
+        })
+
+        document.getElementById('filter--sort').addEventListener('change', (event) => {
+            this.filterProducts();
+        })
     }
 
     handleImageFIle(event) {
@@ -316,6 +336,86 @@ class ProductManagement {
         this.closePopup(document.getElementsByClassName(`${type}--image__element`)[0]);
     }
 
+    filterProducts() {
+        console.log('sadfsa');
+        
+        const productArray = JSON.parse(localStorage.getItem("products")) || [];
+        let inputString = document.getElementById("searchbar").value;
+        inputString = inputString.trim().toLowerCase();
+
+        let filterArray = [];
+        if (inputString !== "" && productArray.length !== 0) {
+            filterArray = productArray.filter((element) => {
+                console.log(element.name.includes(inputString));
+                return (
+                    element.name.toLowerCase().includes(inputString) ||
+                    element.description.toLowerCase().includes(inputString)
+                );
+            });
+
+            storageHandler.setStorage("filterProducts", filterArray);
+            this.getAllproducts(storageHandler.getStorage("filterProducts"));
+        } else {
+            filterArray = productArray;
+        }
+
+        const minValue = document.getElementById('pricemin').value || 0;
+        const maxValue = document.getElementById('pricemax').value || Infinity;
+        console.log(minValue);
+        console.log(maxValue);
+
+
+        filterArray = filterArray.filter((element) => {
+            console.log(+element.price >= minValue && +element.price < -maxValue);
+
+            return +element.price >= minValue && +element.price <= maxValue;
+        })
+
+        const sortValue = document.getElementById('filter--sort').value;
+        console.log(sortValue);
+
+        switch (sortValue) {
+            case '': {
+                break;
+            }
+            case 'name': {
+                filterArray = filterArray.sort((a, b) => a.name.localeCompare(b.name))
+                break;
+            }
+            case 'pricelow': {
+                filterArray = filterArray.sort((a, b) => a.price - b.price);
+                break;
+            }
+            case 'pricehigh': {
+                console.log('highprice');
+
+                filterArray = filterArray.sort((a, b) => b.price - a.price);
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+
+
+        storageHandler.setStorage("filterProducts", filterArray);
+        this.getAllproducts(storageHandler.getStorage("filterProducts"));
+    }
+
+    resetFilter() {
+        const inputString = document.getElementById("searchbar");
+        const minValue = document.getElementById('pricemin');
+        const maxValue = document.getElementById('pricemax');
+        const sortValue = document.getElementById('filter--sort');
+
+        inputString.value = "";
+        minValue.value = "";
+        maxValue.value = "";
+        sortValue.value = "";
+
+        this.getAllproducts(storageHandler.getStorage("products"));
+    }
+
     openPopup(element) {
         element.style.display = "flex";
         document.body.style.overflow = "hidden";
@@ -324,6 +424,17 @@ class ProductManagement {
     closePopup(element) {
         element.style.display = "none";
         document.body.style.overflow = "";
+    }
+}
+
+function debounce(func, duration) {
+    let timeout;
+  
+    return (...args)=>{
+      clearTimeout(timeout)
+      timeout = setTimeout(()=>{
+        func.apply(this,...args);
+      }, duration)
     }
 }
 
