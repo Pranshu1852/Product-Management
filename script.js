@@ -185,8 +185,8 @@ class ProductManagement {
     <div class="productgroup__productcard">
         <img class="productcard__image" src="${product.image}" alt="${product.name}"">
         <div class="productcard__content">
-            <h3 class="productcard__content--text">${product.name}</h3>
-            <h3 class="productcard__content--price">₹ ${product.price}</h3>
+            <h2 class="productcard__content--text">${product.name}</h2>
+            <h2 class="productcard__content--price">₹ ${product.price}</h2>
             <p class="productcard__content--description">${product.description}</p>
         </div>
         <div class="productcard__buttons">

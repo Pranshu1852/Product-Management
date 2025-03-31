@@ -251,7 +251,7 @@ a {
   height: 100%;
   box-sizing: border-box;
 }
-.homepage__filterbar .filterbar__sort h3 {
+.homepage__filterbar .filterbar__sort label {
   color: gray;
   font-size: 1.6rem;
   font-weight: 600;
