@@ -405,6 +405,11 @@ a {
   gap: 40px;
   margin: 100px 30px;
 }
+.homepage__productgroup h2 {
+  font-size: 2rem;
+  text-align: center;
+  grid-column: 1/span3;
+}
 .homepage__productgroup .productgroup__productcard {
   display: flex;
   flex-direction: column;

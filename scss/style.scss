@@ -283,10 +283,6 @@ a{
             flex: 1;
             padding: 15px;
             box-sizing: border-box;
-
-            option{
-
-            }
         }
     }
 
@@ -435,6 +431,11 @@ a{
     gap: 40px;
     margin: 100px 30px;
 
+    h2{
+        font-size: 2rem;
+        text-align: center;
+        grid-column: 1/span3;
+    }
 
     .productgroup__productcard {
         display: flex;
