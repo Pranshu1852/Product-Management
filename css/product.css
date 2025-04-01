@@ -171,7 +171,7 @@ a {
   font-size: 3rem;
   font-weight: bolder;
 }
-.productpage .product__imageconatiner {
+.productpage .product__imagecontainer {
   display: flex;
   align-items: center;
   background-color: white;
@@ -190,16 +190,16 @@ a {
   font-weight: bold;
   color: #F6921E;
 }
-.productpage .productpage__discription {
+.productpage .productpage__description {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-.productpage .productpage__discription h2 {
+.productpage .productpage__description h2 {
   font-size: 2rem;
   font-weight: bold;
 }
-.productpage .productpage__discription p {
+.productpage .productpage__description p {
   font-size: 1.2rem;
   font-weight: 600;
   color: gray;
