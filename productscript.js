@@ -7,11 +7,13 @@ class Product{
     }
 
     setProduct(id){
-        const product=this.getProduct(id);
-        const productName=document.getElementsByClassName('product__name')[0];
-        const productPrice=document.getElementsByClassName('product__price')[0];
-        const productImage=document.getElementsByClassName('productpage__image')[0];
-        const productDescription=document.getElementsByClassName('product__description')[0];
+        if(!this.getProduct(id)){
+            window.location.href = "./index.html";
+        }
+        const productName=document.querySelector('.product__name');
+        const productPrice=document.querySelector('.product__price');
+        const productImage=document.querySelector('.productpage__image');
+        const productDescription=document.querySelector('.product__description');
         productName.textContent=product.name;
         productImage.src=product.image;
         productPrice.textContent=`₹ ${product.price}`;
@@ -25,8 +27,6 @@ class Product{
           return element.id === id;
         });
     
-        console.log(product);
-    
         return product;
     }
 }
@@ -38,6 +38,5 @@ document.addEventListener('DOMContentLoaded',(event)=>{
         id=query[1];
         break;
     }
-    console.log(id);
     new Product(id);
 })
