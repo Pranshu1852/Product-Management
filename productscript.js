@@ -10,14 +10,15 @@ class Product{
         if(!this.getProduct(id)){
             window.location.href = "./index.html";
         }
+        const product=this.getProduct(id);
         const productName=document.querySelector('.product__name');
         const productPrice=document.querySelector('.product__price');
         const productImage=document.querySelector('.productpage__image');
         const productDescription=document.querySelector('.product__description');
-        productName.textContent=product.name;
-        productImage.src=product.image;
-        productPrice.textContent=`₹ ${product.price}`;
-        productDescription.textContent=product.description;
+        productName.textContent=product.name||"There is no Product Name";
+        productImage.src=product.image||"https://www.incathlab.com/images/products/default_product.png";
+        productPrice.textContent=`₹ ${product.price || "Price is not define"}`;
+        productDescription.textContent=product.description || "Don't have Product description";
     }
 
     getProduct(id) {
