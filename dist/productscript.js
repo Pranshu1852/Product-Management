@@ -5,22 +5,24 @@ class Product {
         this.setProduct(id);
     }
     setProduct(id) {
+        if (!this.getProduct(id)) {
+            window.location.href = "./index.html";
+        }
         const product = this.getProduct(id);
-        const productName = document.getElementsByClassName('product__name')[0];
-        const productPrice = document.getElementsByClassName('product__price')[0];
-        const productImage = document.getElementsByClassName('productpage__image')[0];
-        const productDescription = document.getElementsByClassName('product__description')[0];
-        productName.textContent = product.name;
-        productImage.src = product.image;
-        productPrice.textContent = `₹ ${product.price}`;
-        productDescription.textContent = product.description;
+        const productName = document.querySelector('.product__name');
+        const productPrice = document.querySelector('.product__price');
+        const productImage = document.querySelector('.productpage__image');
+        const productDescription = document.querySelector('.product__description');
+        productName.textContent = product.name || "There is no Product Name";
+        productImage.src = product.image || "https://www.incathlab.com/images/products/default_product.png";
+        productPrice.textContent = `₹ ${product.price || "Price is not define"}`;
+        productDescription.textContent = product.description || "Don't have Product description";
     }
     getProduct(id) {
         const productArray = storageHandler.getStorage("products");
         const product = productArray.find((element) => {
             return element.id === id;
         });
-        console.log(product);
         return product;
     }
 }
@@ -31,6 +33,5 @@ document.addEventListener('DOMContentLoaded', (event) => {
         id = query[1];
         break;
     }
-    console.log(id);
     new Product(id);
 });

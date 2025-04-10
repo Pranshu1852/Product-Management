@@ -9,15 +9,18 @@ class Product{
     }
 
     setProduct(id:string){
+        if(!this.getProduct(id)){
+            window.location.href = "./index.html";
+        }
         const product=this.getProduct(id);
-        const productName=document.getElementsByClassName('product__name')[0] as HTMLHeadingElement;
-        const productPrice=document.getElementsByClassName('product__price')[0] as HTMLHeadingElement;
-        const productImage=document.getElementsByClassName('productpage__image')[0] as HTMLImageElement;
-        const productDescription=document.getElementsByClassName('product__description')[0] as HTMLParagraphElement;
-        productName.textContent=product.name;
-        productImage.src=product.image;
-        productPrice.textContent=`₹ ${product.price}`;
-        productDescription.textContent=product.description;
+        const productName=document.querySelector('.product__name') as HTMLHeadingElement;
+        const productPrice=document.querySelector('.product__price') as HTMLHeadingElement;
+        const productImage=document.querySelector('.productpage__image') as HTMLImageElement;
+        const productDescription=document.querySelector('.product__description') as HTMLParagraphElement;
+        productName.textContent=product.name||"There is no Product Name";
+        productImage.src=product.image||"https://www.incathlab.com/images/products/default_product.png";
+        productPrice.textContent=`₹ ${product.price || "Price is not define"}`;
+        productDescription.textContent=product.description || "Don't have Product description";
     }
 
     getProduct(id:string) {
@@ -26,8 +29,6 @@ class Product{
         const product = productArray.find((element:Product) => {
           return element.id === id;
         });
-    
-        console.log(product);
     
         return product;
     }
@@ -40,6 +41,5 @@ document.addEventListener('DOMContentLoaded',(event:Event)=>{
         id=query[1];
         break;
     }
-    console.log(id);
     new Product(id);
 })
