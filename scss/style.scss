@@ -268,7 +268,7 @@ a{
         height: 100%;
         box-sizing: border-box;
 
-        h3{
+        label{
             color: gray;
             font-size: 1.6rem;
             font-weight: 600;
@@ -282,7 +282,9 @@ a{
             background-color: $color-white;
             flex: 1;
             padding: 15px;
+            padding-right: 50px;
             box-sizing: border-box;
+            -webkit-appearance: none;
         }
     }
 
@@ -509,6 +511,22 @@ a{
             }
         }
     }
+}
+
+.productgroup__productcard:hover{
+    transform: scale(1.05);
+    transition-duration: 0.2s;
+}
+
+input:hover,textarea:hover{
+    background-color: rgb(243, 243, 243);
+    border: 1px solid black;
+    transition-duration: 0.2s;
+}
+
+button:hover{
+    opacity: 0.8;
+    transition-duration: 0.2s;
 }
 
 

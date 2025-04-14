@@ -251,7 +251,7 @@ a {
   height: 100%;
   box-sizing: border-box;
 }
-.homepage__filterbar .filterbar__sort h3 {
+.homepage__filterbar .filterbar__sort label {
   color: gray;
   font-size: 1.6rem;
   font-weight: 600;
@@ -264,7 +264,9 @@ a {
   background-color: #ffffff;
   flex: 1;
   padding: 15px;
+  padding-right: 50px;
   box-sizing: border-box;
+  -webkit-appearance: none;
 }
 .homepage__filterbar .btn--reset {
   width: 15%;
@@ -469,6 +471,22 @@ a {
 }
 .homepage__productgroup .productgroup__productcard .productcard__buttons .productcard__buttons--delete {
   background-color: rgb(211, 0, 0);
+}
+
+.productgroup__productcard:hover {
+  transform: scale(1.05);
+  transition-duration: 0.2s;
+}
+
+input:hover, textarea:hover {
+  background-color: rgb(243, 243, 243);
+  border: 1px solid black;
+  transition-duration: 0.2s;
+}
+
+button:hover {
+  opacity: 0.8;
+  transition-duration: 0.2s;
 }
 
 @media (max-width: 992px) {
