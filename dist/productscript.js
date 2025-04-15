@@ -29,6 +29,10 @@ class ProductPage {
         const product = productArray.find((element) => {
             return element.id === id;
         });
+        if (!product) {
+            console.error(`Product with ID ${id} not found.`);
+            return null;
+        }
         return product;
     }
 }

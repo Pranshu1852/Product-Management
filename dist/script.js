@@ -182,9 +182,25 @@ class ProductManagement {
     getAllproducts(productArray) {
         const productGroup = document.getElementsByClassName("homepage__productgroup")[0];
         productGroup.innerHTML = "";
-        productArray.forEach((element) => {
-            productGroup.innerHTML += this.createProduct(element);
+        // productArray.forEach((element) => {
+        //     productGroup.innerHTML += this.createProduct(element);
+        // });
+        const fragment = document.createDocumentFragment();
+        productArray.forEach(product => {
+            const productCard = this.createProduct(product);
+            // const tempElement=document.createElement('template');
+            // tempElement.innerHTML=productCard.trim();
+            // if(tempElement.content.firstChild){
+            //     fragment.append(tempElement.content.firstChild);
+            // }
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(productCard, 'text/html');
+            const node = doc.body.firstChild;
+            if (node) {
+                fragment.append(node);
+            }
         });
+        productGroup.appendChild(fragment);
         document.querySelectorAll(".product--link").forEach((element) => {
             element.addEventListener('click', (event) => {
                 if (event.target.className === "productcard__buttons--delete" || event.target.className === "productcard__buttons--edit") {
@@ -207,7 +223,10 @@ class ProductManagement {
         const product = productArray.find((element) => {
             return element.id === id;
         });
-        console.log(product);
+        if (!product) {
+            console.error(`Product with ID ${id} not found.`);
+            return null;
+        }
         return product;
     }
     deleteProduct(id) {
@@ -236,8 +255,6 @@ class ProductManagement {
             document.getElementsByClassName('updateproduct__image-preview')[0].src = product.image;
         }
         document.getElementById("updateproduct--price").value = product.price.toString();
-        console.log(product.price);
-        console.log(product.price.toString());
         document.getElementById("updateproduct--description").value = product.description;
     }
     handleUpdateproduct() {

@@ -225,9 +225,29 @@ class ProductManagement {
         )[0];
         productGroup.innerHTML = "";
 
-        productArray.forEach((element) => {
-            productGroup.innerHTML += this.createProduct(element);
+        // productArray.forEach((element) => {
+        //     productGroup.innerHTML += this.createProduct(element);
+        // });
+
+        const fragment = document.createDocumentFragment();
+        productArray.forEach(product => {
+            const productCard = this.createProduct(product);
+            // const tempElement=document.createElement('template');
+            // tempElement.innerHTML=productCard.trim();
+
+            // if(tempElement.content.firstChild){
+            //     fragment.append(tempElement.content.firstChild);
+            // }
+
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(productCard, 'text/html');
+            const node = doc.body.firstChild;
+
+            if(node){
+                fragment.append(node);
+            }
         });
+        productGroup.appendChild(fragment);
 
         document.querySelectorAll(".product--link").forEach((element) => {
             element.addEventListener('click', (event: Event) => {
