@@ -8,6 +8,13 @@ export interface Product{
     description: string
 }
 
+export enum SortOptions {
+    NONE = "",
+    NAME = "name",
+    PRICE_LOW = "pricelow",
+    PRICE_HIGH = "pricehigh",
+}
+
 class ProductManagement {
     debouncefilter:()=>void;
 
@@ -204,7 +211,7 @@ class ProductManagement {
 
         productArray.push(product);
 
-        storageHandler.setStorage("products", productArray);
+        storageHandler.setStorage<Product>("products", productArray);
     }
 
     getAllproducts(productArray: Product[]) {
@@ -256,7 +263,7 @@ class ProductManagement {
 
         console.log(filterArray);
 
-        storageHandler.setStorage("products", filterArray);
+        storageHandler.setStorage<Product>("products", filterArray);
         this.getAllproducts(storageHandler.getStorage<Product>("products"));
     }
 
@@ -313,7 +320,7 @@ class ProductManagement {
 
         console.log(updateProductarray);
 
-        storageHandler.setStorage("products", updateProductarray);
+        storageHandler.setStorage<Product>("products", updateProductarray);
         this.getAllproducts(storageHandler.getStorage<Product>("products"));
         this.clearValues('updateproduct');
         this.closePopup(document.getElementsByClassName("homepage__updateproduct")[0] as HTMLDivElement);
@@ -340,14 +347,14 @@ class ProductManagement {
     filterProducts() {
         console.log('sadfsa');
         
-        let productArray = [];
+        let productArray:Product[]|[] = [];
         if(localStorage.getItem("products")){
             productArray = JSON.parse(localStorage.getItem("products")!);
         }
         let inputString = (document.getElementById("searchbar") as HTMLInputElement).value;
         inputString = inputString.trim().toLowerCase();
 
-        let filterArray = [];
+        let filterArray:Product[]|[] = [];
         if (inputString !== "" && productArray.length !== 0) {
             filterArray = productArray.filter((element: Product) => {
                 console.log(element.name.includes(inputString));
@@ -357,7 +364,7 @@ class ProductManagement {
                 );
             });
 
-            storageHandler.setStorage("filterProducts", filterArray);
+            storageHandler.setStorage<Product>("filterProducts", filterArray);
             this.getAllproducts(storageHandler.getStorage<Product>("filterProducts"));
         } else {
             filterArray = productArray;
@@ -370,7 +377,6 @@ class ProductManagement {
 
 
         filterArray = filterArray.filter((element: Product) => {
-
             return Number(element.price) >= Number(minValue) && Number(element.price) <= Number(maxValue);
         })
 
@@ -378,20 +384,18 @@ class ProductManagement {
         console.log(sortValue);
 
         switch (sortValue) {
-            case '': {
+            case SortOptions.NONE: {
                 break;
             }
-            case 'name': {
+            case SortOptions.NAME: {
                 filterArray = filterArray.sort((a:Product, b:Product) => a.name.localeCompare(b.name))
                 break;
             }
-            case 'pricelow': {
+            case SortOptions.PRICE_LOW: {
                 filterArray = filterArray.sort((a:Product, b:Product) => Number(a.price) - Number(b.price));
                 break;
             }
-            case 'pricehigh': {
-                console.log('highprice');
-
+            case SortOptions.PRICE_HIGH: {
                 filterArray = filterArray.sort((a:Product, b:Product) => Number(b.price) - Number(a.price));
                 break;
             }
@@ -401,7 +405,7 @@ class ProductManagement {
         }
 
 
-        storageHandler.setStorage("filterProducts", filterArray);
+        storageHandler.setStorage<Product>("filterProducts", filterArray);
         this.getAllproducts(storageHandler.getStorage<Product>("filterProducts"));
     }
 

@@ -1,4 +1,11 @@
 import storageHandler from "./scripts/storagehandler.js";
+export var SortOptions;
+(function (SortOptions) {
+    SortOptions["NONE"] = "";
+    SortOptions["NAME"] = "name";
+    SortOptions["PRICE_LOW"] = "pricelow";
+    SortOptions["PRICE_HIGH"] = "pricehigh";
+})(SortOptions || (SortOptions = {}));
 class ProductManagement {
     constructor() {
         this.initiateEventListener();
@@ -299,19 +306,18 @@ class ProductManagement {
         const sortValue = document.getElementById('filter--sort').value;
         console.log(sortValue);
         switch (sortValue) {
-            case '': {
+            case SortOptions.NONE: {
                 break;
             }
-            case 'name': {
+            case SortOptions.NAME: {
                 filterArray = filterArray.sort((a, b) => a.name.localeCompare(b.name));
                 break;
             }
-            case 'pricelow': {
+            case SortOptions.PRICE_LOW: {
                 filterArray = filterArray.sort((a, b) => Number(a.price) - Number(b.price));
                 break;
             }
-            case 'pricehigh': {
-                console.log('highprice');
+            case SortOptions.PRICE_HIGH: {
                 filterArray = filterArray.sort((a, b) => Number(b.price) - Number(a.price));
                 break;
             }
