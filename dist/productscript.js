@@ -1,3 +1,4 @@
+import { STORAGE_KEYS } from "./script.js";
 import storageHandler from "./scripts/storagehandler.js";
 class ProductPage {
     constructor(id) {
@@ -24,7 +25,7 @@ class ProductPage {
         productDescription.textContent = (_d = product.description) !== null && _d !== void 0 ? _d : "Don't have Product description";
     }
     getProduct(id) {
-        const productArray = storageHandler.getStorage("products");
+        const productArray = storageHandler.getStorage(STORAGE_KEYS.PRODUCTS);
         const product = productArray.find((element) => {
             return element.id === id;
         });

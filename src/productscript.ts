@@ -1,4 +1,4 @@
-import { Product } from "./script.js";
+import { Product, STORAGE_KEYS } from "./script.js";
 import storageHandler from "./scripts/storagehandler.js";
 
 class ProductPage{
@@ -29,7 +29,7 @@ class ProductPage{
     }
 
     getProduct(id:string) {
-        const productArray = storageHandler.getStorage<Product>("products");
+        const productArray = storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS);
     
         const product = productArray.find((element:Product) => {
           return element.id === id;

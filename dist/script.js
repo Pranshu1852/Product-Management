@@ -1,15 +1,21 @@
 import storageHandler from "./scripts/storagehandler.js";
-export var SortOptions;
+var SortOptions;
 (function (SortOptions) {
     SortOptions["NONE"] = "";
     SortOptions["NAME"] = "name";
     SortOptions["PRICE_LOW"] = "pricelow";
     SortOptions["PRICE_HIGH"] = "pricehigh";
 })(SortOptions || (SortOptions = {}));
+export var STORAGE_KEYS;
+(function (STORAGE_KEYS) {
+    STORAGE_KEYS["PRODUCTS"] = "products";
+    STORAGE_KEYS["FILTERED_PRODUCTS"] = "filterProducts";
+})(STORAGE_KEYS || (STORAGE_KEYS = {}));
+;
 class ProductManagement {
     constructor() {
         this.initiateEventListener();
-        this.getAllproducts(storageHandler.getStorage("products"));
+        this.getAllproducts(storageHandler.getStorage(STORAGE_KEYS.PRODUCTS));
         this.debouncefilter = debounce.call(this, this.filterProducts, 500);
     }
     initiateEventListener() {
@@ -149,7 +155,7 @@ class ProductManagement {
         };
         this.addStorage(product);
         this.clearValues('product');
-        this.getAllproducts(storageHandler.getStorage("products"));
+        this.getAllproducts(storageHandler.getStorage(STORAGE_KEYS.PRODUCTS));
     }
     createProduct(product) {
         const productcard = `<a class="product--link" href="/product.html?product_id=${product.id}">
@@ -169,9 +175,9 @@ class ProductManagement {
         return productcard;
     }
     addStorage(product) {
-        const productArray = storageHandler.getStorage("products");
+        const productArray = storageHandler.getStorage(STORAGE_KEYS.PRODUCTS);
         productArray.push(product);
-        storageHandler.setStorage("products", productArray);
+        storageHandler.setStorage(STORAGE_KEYS.PRODUCTS, productArray);
     }
     getAllproducts(productArray) {
         const productGroup = document.getElementsByClassName("homepage__productgroup")[0];
@@ -197,7 +203,7 @@ class ProductManagement {
         });
     }
     getProduct(id) {
-        const productArray = storageHandler.getStorage("products");
+        const productArray = storageHandler.getStorage(STORAGE_KEYS.PRODUCTS);
         const product = productArray.find((element) => {
             return element.id === id;
         });
@@ -205,13 +211,13 @@ class ProductManagement {
         return product;
     }
     deleteProduct(id) {
-        const productArray = storageHandler.getStorage("products");
+        const productArray = storageHandler.getStorage(STORAGE_KEYS.PRODUCTS);
         const filterArray = productArray.filter((element) => {
             return element.id != id;
         });
         console.log(filterArray);
-        storageHandler.setStorage("products", filterArray);
-        this.getAllproducts(storageHandler.getStorage("products"));
+        storageHandler.setStorage(STORAGE_KEYS.PRODUCTS, filterArray);
+        this.getAllproducts(storageHandler.getStorage(STORAGE_KEYS.PRODUCTS));
     }
     showProduct(id) {
         const product = this.getProduct(id);
@@ -247,7 +253,7 @@ class ProductManagement {
         this.updateProduct(id, updatedProduct);
     }
     updateProduct(id, updatedProduct) {
-        const productArray = storageHandler.getStorage("products");
+        const productArray = storageHandler.getStorage(STORAGE_KEYS.PRODUCTS);
         const updateProductarray = productArray.map((element) => {
             if (element.id === id) {
                 console.log("inside");
@@ -256,8 +262,8 @@ class ProductManagement {
             return element;
         });
         console.log(updateProductarray);
-        storageHandler.setStorage("products", updateProductarray);
-        this.getAllproducts(storageHandler.getStorage("products"));
+        storageHandler.setStorage(STORAGE_KEYS.PRODUCTS, updateProductarray);
+        this.getAllproducts(storageHandler.getStorage(STORAGE_KEYS.PRODUCTS));
         this.clearValues('updateproduct');
         this.closePopup(document.getElementsByClassName("homepage__updateproduct")[0]);
     }
@@ -290,8 +296,8 @@ class ProductManagement {
                 return (element.name.toLowerCase().includes(inputString) ||
                     element.description.toLowerCase().includes(inputString));
             });
-            storageHandler.setStorage("filterProducts", filterArray);
-            this.getAllproducts(storageHandler.getStorage("filterProducts"));
+            storageHandler.setStorage(STORAGE_KEYS.FILTERED_PRODUCTS, filterArray);
+            this.getAllproducts(storageHandler.getStorage(STORAGE_KEYS.FILTERED_PRODUCTS));
         }
         else {
             filterArray = productArray;
@@ -325,8 +331,8 @@ class ProductManagement {
                 break;
             }
         }
-        storageHandler.setStorage("filterProducts", filterArray);
-        this.getAllproducts(storageHandler.getStorage("filterProducts"));
+        storageHandler.setStorage(STORAGE_KEYS.FILTERED_PRODUCTS, filterArray);
+        this.getAllproducts(storageHandler.getStorage(STORAGE_KEYS.FILTERED_PRODUCTS));
     }
     resetFilter() {
         const inputString = document.getElementById("searchbar");
@@ -337,7 +343,7 @@ class ProductManagement {
         minValue.value = "";
         maxValue.value = "";
         sortValue.value = "";
-        this.getAllproducts(storageHandler.getStorage("products"));
+        this.getAllproducts(storageHandler.getStorage(STORAGE_KEYS.PRODUCTS));
     }
     openPopup(element) {
         element.style.display = "flex";

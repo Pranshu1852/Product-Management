@@ -8,19 +8,24 @@ export interface Product{
     description: string
 }
 
-export enum SortOptions {
+enum SortOptions {
     NONE = "",
     NAME = "name",
     PRICE_LOW = "pricelow",
     PRICE_HIGH = "pricehigh",
 }
 
+export enum STORAGE_KEYS {
+    PRODUCTS= "products",
+    FILTERED_PRODUCTS= "filterProducts",
+};
+
 class ProductManagement {
     debouncefilter:()=>void;
 
     constructor() {
         this.initiateEventListener();
-        this.getAllproducts(storageHandler.getStorage<Product>("products"));
+        this.getAllproducts(storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS));
         this.debouncefilter=debounce.call(this,this.filterProducts,500);
     }
 
@@ -185,7 +190,7 @@ class ProductManagement {
 
         this.addStorage(product);
         this.clearValues('product');
-        this.getAllproducts(storageHandler.getStorage<Product>("products"));
+        this.getAllproducts(storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS));
     }
 
     createProduct(product:Product) {
@@ -207,11 +212,11 @@ class ProductManagement {
     }
 
     addStorage(product:Product) {
-        const productArray = storageHandler.getStorage<Product>("products");
+        const productArray = storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS);
 
         productArray.push(product);
 
-        storageHandler.setStorage<Product>("products", productArray);
+        storageHandler.setStorage<Product>(STORAGE_KEYS.PRODUCTS, productArray);
     }
 
     getAllproducts(productArray: Product[]) {
@@ -244,7 +249,7 @@ class ProductManagement {
     }
 
     getProduct(id: string) {
-        const productArray = storageHandler.getStorage<Product>("products");
+        const productArray = storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS);
 
         const product = productArray.find((element: Product) => {
             return element.id === id;
@@ -256,15 +261,15 @@ class ProductManagement {
     }
 
     deleteProduct(id: string) {
-        const productArray = storageHandler.getStorage<Product>("products");
+        const productArray = storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS);
         const filterArray = productArray.filter((element: Product) => {
             return element.id != id;
         });
 
         console.log(filterArray);
 
-        storageHandler.setStorage<Product>("products", filterArray);
-        this.getAllproducts(storageHandler.getStorage<Product>("products"));
+        storageHandler.setStorage<Product>(STORAGE_KEYS.PRODUCTS, filterArray);
+        this.getAllproducts(storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS));
     }
 
     showProduct(id: string) {
@@ -306,7 +311,7 @@ class ProductManagement {
     }
 
     updateProduct(id:string, updatedProduct:Partial<Product>) {
-        const productArray = storageHandler.getStorage<Product>("products");
+        const productArray = storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS);
 
         const updateProductarray = productArray.map((element: Product) => {
             if (element.id === id) {
@@ -320,8 +325,8 @@ class ProductManagement {
 
         console.log(updateProductarray);
 
-        storageHandler.setStorage<Product>("products", updateProductarray);
-        this.getAllproducts(storageHandler.getStorage<Product>("products"));
+        storageHandler.setStorage<Product>(STORAGE_KEYS.PRODUCTS, updateProductarray);
+        this.getAllproducts(storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS));
         this.clearValues('updateproduct');
         this.closePopup(document.getElementsByClassName("homepage__updateproduct")[0] as HTMLDivElement);
     }
@@ -364,8 +369,8 @@ class ProductManagement {
                 );
             });
 
-            storageHandler.setStorage<Product>("filterProducts", filterArray);
-            this.getAllproducts(storageHandler.getStorage<Product>("filterProducts"));
+            storageHandler.setStorage<Product>(STORAGE_KEYS.FILTERED_PRODUCTS, filterArray);
+            this.getAllproducts(storageHandler.getStorage<Product>(STORAGE_KEYS.FILTERED_PRODUCTS));
         } else {
             filterArray = productArray;
         }
@@ -405,8 +410,8 @@ class ProductManagement {
         }
 
 
-        storageHandler.setStorage<Product>("filterProducts", filterArray);
-        this.getAllproducts(storageHandler.getStorage<Product>("filterProducts"));
+        storageHandler.setStorage<Product>(STORAGE_KEYS.FILTERED_PRODUCTS, filterArray);
+        this.getAllproducts(storageHandler.getStorage<Product>(STORAGE_KEYS.FILTERED_PRODUCTS));
     }
 
     resetFilter() {
@@ -420,7 +425,7 @@ class ProductManagement {
         maxValue.value = "";
         sortValue.value = "";
 
-        this.getAllproducts(storageHandler.getStorage<Product>("products"));
+        this.getAllproducts(storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS));
     }
 
     openPopup(element: HTMLElement) {
