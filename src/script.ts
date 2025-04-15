@@ -13,7 +13,7 @@ class ProductManagement {
 
     constructor() {
         this.initiateEventListener();
-        this.getAllproducts(storageHandler.getStorage("products"));
+        this.getAllproducts(storageHandler.getStorage<Product>("products"));
         this.debouncefilter=debounce.call(this,this.filterProducts,500);
     }
 
@@ -178,7 +178,7 @@ class ProductManagement {
 
         this.addStorage(product);
         this.clearValues('product');
-        this.getAllproducts(storageHandler.getStorage("products"));
+        this.getAllproducts(storageHandler.getStorage<Product>("products"));
     }
 
     createProduct(product:Product) {
@@ -200,7 +200,7 @@ class ProductManagement {
     }
 
     addStorage(product:Product) {
-        const productArray = storageHandler.getStorage("products");
+        const productArray = storageHandler.getStorage<Product>("products");
 
         productArray.push(product);
 
@@ -237,7 +237,7 @@ class ProductManagement {
     }
 
     getProduct(id: string) {
-        const productArray = storageHandler.getStorage("products");
+        const productArray = storageHandler.getStorage<Product>("products");
 
         const product = productArray.find((element: Product) => {
             return element.id === id;
@@ -249,7 +249,7 @@ class ProductManagement {
     }
 
     deleteProduct(id: string) {
-        const productArray = storageHandler.getStorage("products");
+        const productArray = storageHandler.getStorage<Product>("products");
         const filterArray = productArray.filter((element: Product) => {
             return element.id != id;
         });
@@ -257,11 +257,15 @@ class ProductManagement {
         console.log(filterArray);
 
         storageHandler.setStorage("products", filterArray);
-        this.getAllproducts(storageHandler.getStorage("products"));
+        this.getAllproducts(storageHandler.getStorage<Product>("products"));
     }
 
     showProduct(id: string) {
         const product = this.getProduct(id);
+        if (!product) {
+            console.error("Product not found");
+            return;
+        }
         (document.getElementById("updateproduct--id") as HTMLInputElement).value = id;
         (document.getElementById("updateproduct--name") as HTMLInputElement).value = product.name;
         if (product.image.startsWith('data')) {
@@ -295,7 +299,7 @@ class ProductManagement {
     }
 
     updateProduct(id:string, updatedProduct:Partial<Product>) {
-        const productArray = storageHandler.getStorage("products");
+        const productArray = storageHandler.getStorage<Product>("products");
 
         const updateProductarray = productArray.map((element: Product) => {
             if (element.id === id) {
@@ -310,7 +314,7 @@ class ProductManagement {
         console.log(updateProductarray);
 
         storageHandler.setStorage("products", updateProductarray);
-        this.getAllproducts(storageHandler.getStorage("products"));
+        this.getAllproducts(storageHandler.getStorage<Product>("products"));
         this.clearValues('updateproduct');
         this.closePopup(document.getElementsByClassName("homepage__updateproduct")[0] as HTMLDivElement);
     }
@@ -354,7 +358,7 @@ class ProductManagement {
             });
 
             storageHandler.setStorage("filterProducts", filterArray);
-            this.getAllproducts(storageHandler.getStorage("filterProducts"));
+            this.getAllproducts(storageHandler.getStorage<Product>("filterProducts"));
         } else {
             filterArray = productArray;
         }
@@ -398,7 +402,7 @@ class ProductManagement {
 
 
         storageHandler.setStorage("filterProducts", filterArray);
-        this.getAllproducts(storageHandler.getStorage("filterProducts"));
+        this.getAllproducts(storageHandler.getStorage<Product>("filterProducts"));
     }
 
     resetFilter() {
@@ -412,7 +416,7 @@ class ProductManagement {
         maxValue.value = "";
         sortValue.value = "";
 
-        this.getAllproducts(storageHandler.getStorage("products"));
+        this.getAllproducts(storageHandler.getStorage<Product>("products"));
     }
 
     openPopup(element: HTMLElement) {

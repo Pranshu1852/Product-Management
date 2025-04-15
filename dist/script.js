@@ -208,6 +208,10 @@ class ProductManagement {
     }
     showProduct(id) {
         const product = this.getProduct(id);
+        if (!product) {
+            console.error("Product not found");
+            return;
+        }
         document.getElementById("updateproduct--id").value = id;
         document.getElementById("updateproduct--name").value = product.name;
         if (product.image.startsWith('data')) {
