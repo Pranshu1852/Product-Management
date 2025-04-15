@@ -93,14 +93,14 @@ class ProductManagement {
                 previewImage.src = event.target.result.toString();
             });
             reader.readAsDataURL(file);
-            imageURLinput.disabled = true;
+            this.toggleElementDisabled(imageURLinput, true);
             imageURLinput.value = '';
             this.openPopup(document.querySelector(`.${type}--image__element`));
         }
         else {
             this.closePopup(document.querySelector(`.${type}--image__element`));
-            imageFileInput.disabled = false;
-            imageURLinput.disabled = false;
+            this.toggleElementDisabled(imageFileInput, false);
+            this.toggleElementDisabled(imageURLinput, false);
         }
     }
     handleImageURL(event) {
@@ -108,7 +108,7 @@ class ProductManagement {
         const type = imageURLInput.id.startsWith('update') ? 'updateproduct' : 'product';
         if (imageURLInput.value.trim() !== '') {
             const imageFileInput = document.getElementById(`${type}--imagefile`);
-            imageFileInput.disabled = true;
+            this.toggleElementDisabled(imageFileInput, true);
             imageFileInput.value = '';
             imageFileInput.setAttribute('data-value', '');
             const previewImage = document.querySelector(`.${type}__image-preview`);
@@ -124,19 +124,18 @@ class ProductManagement {
         const imageURL = document.getElementById(imageURLID);
         imageFile.addEventListener("change", (event) => {
             if (imageFile.files.length != 0) {
-                console.log(imageFile.files);
-                imageURL.disabled = true;
+                this.toggleElementDisabled(imageURL, true);
             }
             else {
-                imageFile.disabled = false;
+                this.toggleElementDisabled(imageFile, false);
             }
         });
         imageURL.addEventListener("change", (event) => {
             if (imageURL.value.trim() != "") {
-                imageFile.disabled = true;
+                this.toggleElementDisabled(imageFile, true);
             }
             else {
-                imageFile.disabled = false;
+                this.toggleElementDisabled(imageFile, false);
             }
         });
     }
@@ -188,11 +187,6 @@ class ProductManagement {
         const fragment = document.createDocumentFragment();
         productArray.forEach(product => {
             const productCard = this.createProduct(product);
-            // const tempElement=document.createElement('template');
-            // tempElement.innerHTML=productCard.trim();
-            // if(tempElement.content.firstChild){
-            //     fragment.append(tempElement.content.firstChild);
-            // }
             const parser = new DOMParser();
             const doc = parser.parseFromString(productCard, 'text/html');
             const node = doc.body.firstChild;
@@ -296,8 +290,8 @@ class ProductManagement {
         imageFile.setAttribute('data-value', '');
         imageFile.value = '';
         imageURL.value = "";
-        imageFile.disabled = false;
-        imageURL.disabled = false;
+        this.toggleElementDisabled(imageFile, false);
+        this.toggleElementDisabled(imageURL, false);
         this.closePopup(document.getElementsByClassName(`${type}--image__element`)[0]);
     }
     filterProducts() {
@@ -371,6 +365,9 @@ class ProductManagement {
     closePopup(element) {
         element.style.display = "none";
         document.body.style.overflow = "";
+    }
+    toggleElementDisabled(element, isDisabled) {
+        element.disabled = isDisabled;
     }
 }
 function debounce(func, duration) {

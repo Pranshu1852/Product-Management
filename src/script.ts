@@ -116,16 +116,15 @@ class ProductManagement {
 
             reader.readAsDataURL(file);
 
-
-            imageURLinput.disabled = true;
+            this.toggleElementDisabled(imageURLinput,true);
             imageURLinput.value = '';
 
             this.openPopup(document.querySelector(`.${type}--image__element`) as HTMLDivElement);
         }
         else {
             this.closePopup(document.querySelector(`.${type}--image__element`) as HTMLDivElement);
-            imageFileInput.disabled = false;
-            imageURLinput.disabled = false;
+            this.toggleElementDisabled(imageFileInput,false);
+            this.toggleElementDisabled(imageURLinput,false);
         }
     }
 
@@ -135,7 +134,7 @@ class ProductManagement {
 
         if (imageURLInput.value.trim() !== '') {
             const imageFileInput = document.getElementById(`${type}--imagefile`) as HTMLInputElement;
-            imageFileInput.disabled = true;
+            this.toggleElementDisabled(imageFileInput,true);
             imageFileInput.value = '';
             imageFileInput.setAttribute('data-value', '');
 
@@ -156,19 +155,17 @@ class ProductManagement {
 
         imageFile.addEventListener("change", (event: Event) => {
             if (imageFile.files!.length != 0) {
-                console.log(imageFile.files);
-
-                imageURL.disabled = true;
+                this.toggleElementDisabled(imageURL,true);
             } else {
-                imageFile.disabled = false;
+                this.toggleElementDisabled(imageFile,false);
             }
         });
 
         imageURL.addEventListener("change", (event: Event) => {
             if (imageURL.value.trim() != "") {
-                imageFile.disabled = true;
+                this.toggleElementDisabled(imageFile,true);
             } else {
-                imageFile.disabled = false;
+                this.toggleElementDisabled(imageFile,false);
             }
         });
     }
@@ -232,13 +229,6 @@ class ProductManagement {
         const fragment = document.createDocumentFragment();
         productArray.forEach(product => {
             const productCard = this.createProduct(product);
-            // const tempElement=document.createElement('template');
-            // tempElement.innerHTML=productCard.trim();
-
-            // if(tempElement.content.firstChild){
-            //     fragment.append(tempElement.content.firstChild);
-            // }
-
             const parser = new DOMParser();
             const doc = parser.parseFromString(productCard, 'text/html');
             const node = doc.body.firstChild;
@@ -367,8 +357,8 @@ class ProductManagement {
         imageFile.value = '';
         imageURL.value = "";
 
-        imageFile.disabled = false;
-        imageURL.disabled = false;
+        this.toggleElementDisabled(imageFile,false);
+        this.toggleElementDisabled(imageURL,false);
 
         this.closePopup(document.getElementsByClassName(`${type}--image__element`)[0] as HTMLDivElement);
     }
@@ -462,6 +452,9 @@ class ProductManagement {
         document.body.style.overflow = "";
     }
     
+    private toggleElementDisabled(element: HTMLInputElement, isDisabled: boolean): void {
+        element.disabled = isDisabled;
+    }
 }
 
 function debounce(this: ProductManagement,func: ()=>void, duration:number):() => void {
