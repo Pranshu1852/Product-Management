@@ -9,7 +9,7 @@ class ProductPage{
         this.setProduct(id);
     }
 
-    setProduct(id:string){
+    setProduct(id:string):void {
         if(!this.getProduct(id)){
             window.location.href = "./index.html";
         }
@@ -28,18 +28,23 @@ class ProductPage{
         productDescription.textContent=product.description ?? "Don't have Product description";
     }
 
-    getProduct(id:string) {
+    getProduct(id:string):Product | null {
         const productArray = storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS);
     
         const product = productArray.find((element:Product) => {
           return element.id === id;
         });
     
-        return product;
+        if (!product) {
+            console.error(`Product with ID ${id} not found.`);
+            return null;
+        }
+            
+        return product;    
     }
 }
 
-document.addEventListener('DOMContentLoaded',(event:Event)=>{
+document.addEventListener('DOMContentLoaded',(event:Event) =>{
     const params = new URLSearchParams(window.location.search);
     let id='';
     for(let query of params){

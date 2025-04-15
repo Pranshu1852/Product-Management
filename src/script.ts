@@ -96,7 +96,7 @@ class ProductManagement {
         })
     }
 
-    handleImageFIle(event: Event) {
+    handleImageFIle(event: Event):void {
         const imageFileInput = event.target as HTMLInputElement;
         const type = imageFileInput.id.startsWith('update') ? 'updateproduct' : 'product';
         let file;
@@ -193,7 +193,7 @@ class ProductManagement {
         this.getAllproducts(storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS));
     }
 
-    createProduct(product:Product) {
+    createProduct(product:Product):string {
         const productcard: string = `<a class="product--link" href="/product.html?product_id=${product.id}">
     <div class="productgroup__productcard">
         <img class="productcard__image" src="${product.image}" alt="${product.name}"">
@@ -211,7 +211,7 @@ class ProductManagement {
         return productcard;
     }
 
-    addStorage(product:Product) {
+    addStorage(product:Product):void {
         const productArray = storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS);
 
         productArray.push(product);
@@ -219,7 +219,7 @@ class ProductManagement {
         storageHandler.setStorage<Product>(STORAGE_KEYS.PRODUCTS, productArray);
     }
 
-    getAllproducts(productArray: Product[]) {
+    getAllproducts(productArray: Product[]):void {
         const productGroup = document.getElementsByClassName(
             "homepage__productgroup"
         )[0];
@@ -248,19 +248,22 @@ class ProductManagement {
         })
     }
 
-    getProduct(id: string) {
+    getProduct(id: string):Product | null {
         const productArray = storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS);
 
         const product = productArray.find((element: Product) => {
             return element.id === id;
         });
 
-        console.log(product);
-
+        if (!product) {
+            console.error(`Product with ID ${id} not found.`);
+            return null;
+        }
+        
         return product;
     }
 
-    deleteProduct(id: string) {
+    deleteProduct(id: string):void {
         const productArray = storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS);
         const filterArray = productArray.filter((element: Product) => {
             return element.id != id;
@@ -272,7 +275,7 @@ class ProductManagement {
         this.getAllproducts(storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS));
     }
 
-    showProduct(id: string) {
+    showProduct(id: string):void {
         const product = this.getProduct(id);
         if (!product) {
             console.error("Product not found");
@@ -293,7 +296,7 @@ class ProductManagement {
         (document.getElementById("updateproduct--description") as HTMLInputElement).value = product.description;
     }
 
-    handleUpdateproduct() {
+    handleUpdateproduct():void {
         const id = (document.getElementById("updateproduct--id") as HTMLInputElement).value;
 
         const name = (document.getElementById("updateproduct--name") as HTMLInputElement).value;
@@ -311,7 +314,7 @@ class ProductManagement {
         this.updateProduct(id, updatedProduct);
     }
 
-    updateProduct(id:string, updatedProduct:Partial<Product>) {
+    updateProduct(id:string, updatedProduct:Partial<Product>):void {
         const productArray = storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS);
 
         const updateProductarray = productArray.map((element: Product) => {
@@ -332,7 +335,7 @@ class ProductManagement {
         this.closePopup(document.getElementsByClassName("homepage__updateproduct")[0] as HTMLDivElement);
     }
 
-    clearValues(type: string) {
+    clearValues(type: string):void {
         (document.getElementById(`${type}--name`) as HTMLInputElement).value = "";
         (document.getElementById(`${type}--image`) as HTMLInputElement).value = "";
         (document.getElementById(`${type}--price`) as HTMLInputElement).value = "";
@@ -350,7 +353,7 @@ class ProductManagement {
         this.closePopup(document.getElementsByClassName(`${type}--image__element`)[0] as HTMLDivElement);
     }
 
-    filterProducts() {
+    filterProducts():void {
         console.log('sadfsa');
         
         let productArray:Product[]|[] = [];
@@ -415,7 +418,7 @@ class ProductManagement {
         this.getAllproducts(storageHandler.getStorage<Product>(STORAGE_KEYS.FILTERED_PRODUCTS));
     }
 
-    resetFilter() {
+    resetFilter():void {
         const inputString = document.getElementById("searchbar") as HTMLInputElement;
         const minValue = document.getElementById('pricemin') as HTMLInputElement;
         const maxValue = document.getElementById('pricemax') as HTMLInputElement;
@@ -429,19 +432,19 @@ class ProductManagement {
         this.getAllproducts(storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS));
     }
 
-    openPopup(element: HTMLElement) {
+    openPopup(element: HTMLElement):void {
         element.style.display = "flex";
         document.body.style.overflow = "hidden";
     }
 
-    closePopup(element: HTMLElement) {
+    closePopup(element: HTMLElement):void {
         element.style.display = "none";
         document.body.style.overflow = "";
     }
     
 }
 
-function debounce(this: ProductManagement,func: ()=>void, duration:number) {
+function debounce(this: ProductManagement,func: ()=>void, duration:number):() => void {
     let timeout: number;
   
     return (...args: [])=>{
