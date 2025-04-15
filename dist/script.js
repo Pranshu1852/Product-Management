@@ -144,7 +144,7 @@ class ProductManagement {
         const name = document.getElementById("product--name").value;
         const image = document.getElementById('product--imagefile').getAttribute('data-value') || document.getElementById("product--image").value ||
             "https://www.incathlab.com/images/products/default_product.png";
-        const price = document.getElementById("product--price").value;
+        const price = Number(document.getElementById("product--price").value);
         const description = document.getElementById("product--description").value;
         const product = {
             id: crypto.randomUUID(),
@@ -235,14 +235,16 @@ class ProductManagement {
             document.getElementById("updateproduct--image").value = product.image;
             document.getElementsByClassName('updateproduct__image-preview')[0].src = product.image;
         }
-        document.getElementById("updateproduct--price").value = product.price;
+        document.getElementById("updateproduct--price").value = product.price.toString();
+        console.log(product.price);
+        console.log(product.price.toString());
         document.getElementById("updateproduct--description").value = product.description;
     }
     handleUpdateproduct() {
         const id = document.getElementById("updateproduct--id").value;
         const name = document.getElementById("updateproduct--name").value;
         const image = document.getElementById('updateproduct--imagefile').getAttribute('data-value') || document.getElementById("updateproduct--image").value || "https://www.incathlab.com/images/products/default_product.png";
-        const price = document.getElementById("updateproduct--price").value;
+        const price = Number(document.getElementById("updateproduct--price").value);
         const description = document.getElementById("updateproduct--description").value;
         const updatedProduct = {
             name: name,

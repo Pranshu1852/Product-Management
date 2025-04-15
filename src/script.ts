@@ -3,7 +3,7 @@ import storageHandler from "./scripts/storagehandler.js";
 export interface Product{
     id: string,
     name: string,
-    price: string,
+    price: number,
     image: string,
     description: string
 }
@@ -177,7 +177,7 @@ class ProductManagement {
         const name = (document.getElementById("product--name") as HTMLInputElement).value;
         const image = (document.getElementById('product--imagefile') as HTMLInputElement).getAttribute('data-value') || (document.getElementById("product--image") as HTMLInputElement).value ||
             "https://www.incathlab.com/images/products/default_product.png";
-        const price = (document.getElementById("product--price") as HTMLInputElement).value;
+        const price = Number((document.getElementById("product--price") as HTMLInputElement).value);
         const description = (document.getElementById("product--description") as HTMLInputElement).value;
 
         const product:Product = {
@@ -288,7 +288,8 @@ class ProductManagement {
             (document.getElementById("updateproduct--image") as HTMLInputElement).value = product.image;
             (document.getElementsByClassName('updateproduct__image-preview')[0] as HTMLInputElement).src = product.image;
         }
-        (document.getElementById("updateproduct--price") as HTMLInputElement).value = product.price;
+        (document.getElementById("updateproduct--price") as HTMLInputElement).value = product.price.toString();
+        
         (document.getElementById("updateproduct--description") as HTMLInputElement).value = product.description;
     }
 
@@ -297,7 +298,7 @@ class ProductManagement {
 
         const name = (document.getElementById("updateproduct--name") as HTMLInputElement).value;
         const image = (document.getElementById('updateproduct--imagefile') as HTMLInputElement).getAttribute('data-value') || (document.getElementById("updateproduct--image") as HTMLInputElement).value || "https://www.incathlab.com/images/products/default_product.png";
-        const price = (document.getElementById("updateproduct--price") as HTMLInputElement).value;
+        const price = Number((document.getElementById("updateproduct--price") as HTMLInputElement).value);
         const description = (document.getElementById("updateproduct--description") as HTMLInputElement).value;
 
         const updatedProduct:Partial<Product> = {
