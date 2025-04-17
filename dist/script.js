@@ -1,11 +1,5 @@
+import { filterOperations } from "./scripts/filterOperations.js";
 import storageHandler from "./scripts/storagehandler.js";
-var SortOptions;
-(function (SortOptions) {
-    SortOptions["NONE"] = "";
-    SortOptions["NAME"] = "name";
-    SortOptions["PRICE_LOW"] = "pricelow";
-    SortOptions["PRICE_HIGH"] = "pricehigh";
-})(SortOptions || (SortOptions = {}));
 export var STORAGE_KEYS;
 (function (STORAGE_KEYS) {
     STORAGE_KEYS["PRODUCTS"] = "products";
@@ -14,9 +8,29 @@ export var STORAGE_KEYS;
 ;
 class ProductManagement {
     constructor() {
+        this.url = new URL(window.location.href);
         this.initiateEventListener();
         this.getAllproducts(storageHandler.getStorage(STORAGE_KEYS.PRODUCTS));
         this.debouncefilter = debounce.call(this, this.filterProducts, 500);
+        this.initFilterValues();
+    }
+    initFilterValues() {
+        var _a, _b, _c, _d;
+        if (this.url.searchParams.get('search') || this.url.searchParams.get('min') || this.url.searchParams.get('max') || this.url.searchParams.get('sort')) {
+            if (this.url.searchParams.get('search')) {
+                document.getElementById('searchbar').value = (_a = this.url.searchParams.get('search')) !== null && _a !== void 0 ? _a : '';
+            }
+            if (this.url.searchParams.get('min')) {
+                document.getElementById('pricemin').value = (_b = this.url.searchParams.get('min')) !== null && _b !== void 0 ? _b : '';
+            }
+            if (this.url.searchParams.get('max')) {
+                document.getElementById('pricemax').value = (_c = this.url.searchParams.get('max')) !== null && _c !== void 0 ? _c : '';
+            }
+            if (this.url.searchParams.get('sort')) {
+                document.getElementById('filter--sort').value = (_d = this.url.searchParams.get('sort')) !== null && _d !== void 0 ? _d : '';
+            }
+            this.filterProducts();
+        }
     }
     initiateEventListener() {
         document.querySelectorAll('#addproduct__form,#updateproduct__form').forEach((element) => {
@@ -47,6 +61,14 @@ class ProductManagement {
         });
         document.getElementById("searchbar").addEventListener("input", (event) => {
             event.preventDefault();
+            let searchElement = event.target;
+            if (searchElement.value === '') {
+                this.url.searchParams.delete('search');
+            }
+            else {
+                this.url.searchParams.set('search', event.target.value);
+            }
+            window.history.pushState({}, '', this.url);
             this.debouncefilter();
         });
         document
@@ -67,6 +89,25 @@ class ProductManagement {
         });
         document.getElementsByClassName('homepage__filterbar')[0].addEventListener('click', (event) => {
             if (event.target.className === 'btn--filter') {
+                const minValue = document.getElementById('pricemin').value || 0;
+                const maxValue = document.getElementById('pricemax').value || Infinity;
+                if (minValue === 0 && maxValue === Infinity) {
+                    this.url.searchParams.delete('min');
+                    this.url.searchParams.delete('max');
+                }
+                else if (minValue !== 0 && maxValue === Infinity) {
+                    this.url.searchParams.delete('max');
+                    this.url.searchParams.set('min', minValue.toString());
+                }
+                else if (minValue === 0 && maxValue !== Infinity) {
+                    this.url.searchParams.delete('min');
+                    this.url.searchParams.set('max', maxValue.toString());
+                }
+                else {
+                    this.url.searchParams.set('min', minValue.toString());
+                    this.url.searchParams.set('max', maxValue.toString());
+                }
+                window.history.pushState({}, '', this.url);
                 this.filterProducts();
             }
             if (event.target.className === 'btn--reset') {
@@ -74,6 +115,14 @@ class ProductManagement {
             }
         });
         document.getElementById('filter--sort').addEventListener('change', (event) => {
+            let sortElement = event.target;
+            if (sortElement.value === '') {
+                this.url.searchParams.delete('sort');
+            }
+            else {
+                this.url.searchParams.set('sort', event.target.value);
+            }
+            window.history.pushState({}, '', this.url);
             this.filterProducts();
         });
     }
@@ -295,54 +344,25 @@ class ProductManagement {
         this.closePopup(document.getElementsByClassName(`${type}--image__element`)[0]);
     }
     filterProducts() {
-        console.log('sadfsa');
         let productArray = [];
         if (localStorage.getItem("products")) {
             productArray = JSON.parse(localStorage.getItem("products"));
         }
-        let inputString = document.getElementById("searchbar").value;
-        inputString = inputString.trim().toLowerCase();
         let filterArray = [];
-        if (inputString !== "" && productArray.length !== 0) {
-            filterArray = productArray.filter((element) => {
-                console.log(element.name.includes(inputString));
-                return (element.name.toLowerCase().includes(inputString) ||
-                    element.description.toLowerCase().includes(inputString));
-            });
-            storageHandler.setStorage(STORAGE_KEYS.FILTERED_PRODUCTS, filterArray);
-            this.getAllproducts(storageHandler.getStorage(STORAGE_KEYS.FILTERED_PRODUCTS));
+        if (this.url.searchParams.get('search')) {
+            // console.log('search is running');
+            filterArray = filterOperations.searchFilter(filterArray, productArray);
         }
         else {
             filterArray = productArray;
         }
-        const minValue = document.getElementById('pricemin').value || 0;
-        const maxValue = document.getElementById('pricemax').value || Infinity;
-        console.log(minValue);
-        console.log(maxValue);
-        filterArray = filterArray.filter((element) => {
-            return Number(element.price) >= Number(minValue) && Number(element.price) <= Number(maxValue);
-        });
-        const sortValue = document.getElementById('filter--sort').value;
-        console.log(sortValue);
-        switch (sortValue) {
-            case SortOptions.NONE: {
-                break;
-            }
-            case SortOptions.NAME: {
-                filterArray = filterArray.sort((a, b) => a.name.localeCompare(b.name));
-                break;
-            }
-            case SortOptions.PRICE_LOW: {
-                filterArray = filterArray.sort((a, b) => Number(a.price) - Number(b.price));
-                break;
-            }
-            case SortOptions.PRICE_HIGH: {
-                filterArray = filterArray.sort((a, b) => Number(b.price) - Number(a.price));
-                break;
-            }
-            default: {
-                break;
-            }
+        if (this.url.searchParams.get('min') || this.url.searchParams.get('max')) {
+            // console.log('min max running');
+            filterArray = filterOperations.priceFilter(filterArray);
+        }
+        if (this.url.searchParams.get('sort')) {
+            // console.log('sort is running');
+            filterArray = filterOperations.sortFilter(filterArray);
         }
         storageHandler.setStorage(STORAGE_KEYS.FILTERED_PRODUCTS, filterArray);
         this.getAllproducts(storageHandler.getStorage(STORAGE_KEYS.FILTERED_PRODUCTS));

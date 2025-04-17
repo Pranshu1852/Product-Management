@@ -1,3 +1,4 @@
+import { filterOperations } from "./scripts/filterOperations.js";
 import storageHandler from "./scripts/storagehandler.js";
 
 export interface Product{
@@ -8,13 +9,6 @@ export interface Product{
     description: string
 }
 
-enum SortOptions {
-    NONE = "",
-    NAME = "name",
-    PRICE_LOW = "pricelow",
-    PRICE_HIGH = "pricehigh",
-}
-
 export enum STORAGE_KEYS {
     PRODUCTS= "products",
     FILTERED_PRODUCTS= "filterProducts",
@@ -22,11 +16,36 @@ export enum STORAGE_KEYS {
 
 class ProductManagement {
     debouncefilter:()=>void;
+    url: URL
 
     constructor() {
+        this.url= new URL(window.location.href);
         this.initiateEventListener();
         this.getAllproducts(storageHandler.getStorage<Product>(STORAGE_KEYS.PRODUCTS));
         this.debouncefilter=debounce.call(this,this.filterProducts,500);
+        this.initFilterValues();
+    }
+
+    initFilterValues(){
+        if(this.url.searchParams.get('search')||this.url.searchParams.get('min')||this.url.searchParams.get('max')||this.url.searchParams.get('sort')){
+            if(this.url.searchParams.get('search')){
+                (document.getElementById('searchbar') as HTMLInputElement).value=this.url.searchParams.get('search')??'';
+            }
+    
+            if(this.url.searchParams.get('min')){
+                (document.getElementById('pricemin') as HTMLInputElement).value=this.url.searchParams.get('min')??'';
+            }
+    
+            if(this.url.searchParams.get('max')){
+                (document.getElementById('pricemax') as HTMLInputElement).value=this.url.searchParams.get('max')??'';
+            }
+    
+            if(this.url.searchParams.get('sort')){
+                (document.getElementById('filter--sort') as HTMLSelectElement).value=this.url.searchParams.get('sort')??'';
+            }
+
+            this.filterProducts();
+        }
     }
 
     initiateEventListener() {
@@ -60,6 +79,16 @@ class ProductManagement {
 
         document.getElementById("searchbar")!.addEventListener("input", (event:Event) => {
             event.preventDefault();
+            let searchElement=event.target as HTMLInputElement;
+
+            if(searchElement.value===''){
+                this.url.searchParams.delete('search');
+            }
+            else{
+                this.url.searchParams.set('search', (event.target as HTMLInputElement).value);
+            }
+            window.history.pushState({}, '', this.url);
+
             this.debouncefilter();
         });
 
@@ -83,6 +112,27 @@ class ProductManagement {
 
         document.getElementsByClassName('homepage__filterbar')[0].addEventListener('click', (event: Event) => {
             if ((event.target as HTMLButtonElement).className === 'btn--filter') {
+                const minValue = (document.getElementById('pricemin') as HTMLInputElement).value || 0;
+                const maxValue = (document.getElementById('pricemax') as HTMLInputElement).value || Infinity;
+
+                if(minValue===0&&maxValue===Infinity){
+                    this.url.searchParams.delete('min');
+                    this.url.searchParams.delete('max');
+                }
+                else if(minValue!==0&&maxValue===Infinity){
+                    this.url.searchParams.delete('max');
+                    this.url.searchParams.set('min',minValue.toString());
+                }
+                else if(minValue===0&&maxValue!==Infinity){
+                    this.url.searchParams.delete('min');
+                    this.url.searchParams.set('max',maxValue.toString());
+                }
+                else{
+                    this.url.searchParams.set('min',minValue.toString());
+                    this.url.searchParams.set('max',maxValue.toString());
+                }
+                window.history.pushState({}, '', this.url);
+
                 this.filterProducts();
             }
 
@@ -92,6 +142,16 @@ class ProductManagement {
         })
 
         document.getElementById('filter--sort')!.addEventListener('change', (event: Event) => {
+            let sortElement=event.target as HTMLSelectElement;
+
+            if(sortElement.value===''){
+                this.url.searchParams.delete('sort');
+            }
+            else{
+                this.url.searchParams.set('sort', (event.target as HTMLSelectElement).value);
+            }
+            window.history.pushState({}, '', this.url);
+
             this.filterProducts();
         })
     }
@@ -364,65 +424,28 @@ class ProductManagement {
     }
 
     filterProducts():void {
-        console.log('sadfsa');
-        
         let productArray:Product[]|[] = [];
         if(localStorage.getItem("products")){
             productArray = JSON.parse(localStorage.getItem("products")!);
         }
-        let inputString = (document.getElementById("searchbar") as HTMLInputElement).value;
-        inputString = inputString.trim().toLowerCase();
-
         let filterArray:Product[]|[] = [];
-        if (inputString !== "" && productArray.length !== 0) {
-            filterArray = productArray.filter((element: Product) => {
-                console.log(element.name.includes(inputString));
-                return (
-                    element.name.toLowerCase().includes(inputString) ||
-                    element.description.toLowerCase().includes(inputString)
-                );
-            });
 
-            storageHandler.setStorage<Product>(STORAGE_KEYS.FILTERED_PRODUCTS, filterArray);
-            this.getAllproducts(storageHandler.getStorage<Product>(STORAGE_KEYS.FILTERED_PRODUCTS));
-        } else {
+        if(this.url.searchParams.get('search')){
+            // console.log('search is running');
+            filterArray=filterOperations.searchFilter(filterArray,productArray);
+        }else {
             filterArray = productArray;
         }
 
-        const minValue = (document.getElementById('pricemin') as HTMLInputElement).value || 0;
-        const maxValue = (document.getElementById('pricemax') as HTMLInputElement).value || Infinity;
-        console.log(minValue);
-        console.log(maxValue);
-
-
-        filterArray = filterArray.filter((element: Product) => {
-            return Number(element.price) >= Number(minValue) && Number(element.price) <= Number(maxValue);
-        })
-
-        const sortValue = (document.getElementById('filter--sort') as HTMLSelectElement).value;
-        console.log(sortValue);
-
-        switch (sortValue) {
-            case SortOptions.NONE: {
-                break;
-            }
-            case SortOptions.NAME: {
-                filterArray = filterArray.sort((a:Product, b:Product) => a.name.localeCompare(b.name))
-                break;
-            }
-            case SortOptions.PRICE_LOW: {
-                filterArray = filterArray.sort((a:Product, b:Product) => Number(a.price) - Number(b.price));
-                break;
-            }
-            case SortOptions.PRICE_HIGH: {
-                filterArray = filterArray.sort((a:Product, b:Product) => Number(b.price) - Number(a.price));
-                break;
-            }
-            default: {
-                break;
-            }
+        if(this.url.searchParams.get('min')||this.url.searchParams.get('max')){
+            // console.log('min max running');
+            filterArray=filterOperations.priceFilter(filterArray);
         }
 
+        if(this.url.searchParams.get('sort')){
+            // console.log('sort is running');
+            filterArray=filterOperations.sortFilter(filterArray);
+        }
 
         storageHandler.setStorage<Product>(STORAGE_KEYS.FILTERED_PRODUCTS, filterArray);
         this.getAllproducts(storageHandler.getStorage<Product>(STORAGE_KEYS.FILTERED_PRODUCTS));
