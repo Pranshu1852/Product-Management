@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const storageHandler = {
     getStorage(key) {
         return localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : [];
@@ -8,4 +6,4 @@ const storageHandler = {
         localStorage.setItem(key, JSON.stringify(array));
     },
 };
-exports.default = storageHandler;
+export default storageHandler;
